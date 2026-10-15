@@ -8,7 +8,7 @@ Falls nicht, erinnert sie dich alle 15 Minuten erneut, bis du das Gebet abhakst 
 - **Gebetszeiten von Diyanet oder IGMG**: Stadt und Quelle jederzeit in den Einstellungen änderbar
 - **Mitteilung zur Ezan-Zeit** mit den Buttons **„✅ Gebetet“** und **„⏰ Noch nicht“**
 - **Erneute Erinnerung** (Standard alle 15 Min., einstellbar 5–60 Min.), kurz vor Ablauf dringender
-- **Menüleiste** zeigt das nächste Gebet bzw. „⚠ Öğle offen“, wenn ein Gebet noch fällig ist
+- **Menüleiste mit Countdown**: „İkindi in 42 Min“ bis zum nächsten Gebet bzw. „⚠ Öğle noch 1 Std 5 Min“, solange ein Gebet fällig ist
 - **Tagesübersicht** zum Abhaken, „Heute x/5“ und **Serie** (Tage mit allen 5 Gebeten)
 - Zeiten werden für ~1 Monat gespeichert, die App funktioniert also auch offline
 - Optional: Autostart beim Anmelden

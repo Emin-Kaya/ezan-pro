@@ -26,13 +26,21 @@ struct MenuBarLabel: View {
 
     var body: some View {
         if let open = store.openWindow {
+            // Prayer is due: show how much time is left to pray it.
             Image(systemName: "exclamationmark.circle.fill")
-            Text("\(open.prayer.name) offen")
+            Text("\(open.prayer.name) noch \(Self.duration(until: open.end, from: store.now))")
         } else if let next = store.nextWindow {
             Image(systemName: "moon.stars.fill")
-            Text("\(next.prayer.name) \(next.start.formatted(date: .omitted, time: .shortened))")
+            Text("\(next.prayer.name) in \(Self.duration(until: next.start, from: store.now))")
         } else {
             Image(systemName: "moon.stars")
         }
+    }
+
+    static func duration(until date: Date, from now: Date) -> String {
+        let minutes = Int(date.timeIntervalSince(now) / 60)
+        if minutes < 1 { return "<1 Min" }
+        if minutes < 60 { return "\(minutes) Min" }
+        return "\(minutes / 60) Std \(minutes % 60) Min"
     }
 }
