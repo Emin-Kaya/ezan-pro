@@ -14,7 +14,9 @@ final class Updater: ObservableObject {
         case failed(String)
     }
 
-    @Published private(set) var state: State = .idle
+    @Published private(set) var state: State = .idle {
+        didSet { NSLog("EzanPro updater: %@", String(describing: state)) }
+    }
     @Published var autoInstall: Bool { didSet { UserDefaults.standard.set(autoInstall, forKey: "autoUpdate") } }
 
     private static let latestURL = URL(string: "https://api.github.com/repos/Emin-Kaya/ezan-pro/releases/latest")!
@@ -47,7 +49,7 @@ final class Updater: ObservableObject {
         guard state != .installing else { return }
         state = .checking
         do {
-            var req = URLRequest(url: Self.latestURL)
+            var req = URLRequest(url: Self.latestURL, cachePolicy: .reloadIgnoringLocalCacheData)
             req.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
             let (data, _) = try await URLSession.shared.data(for: req)
             let release = try JSONDecoder().decode(Release.self, from: data)
