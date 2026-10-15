@@ -9,7 +9,6 @@ Falls nicht, erinnert sie dich alle 15 Minuten erneut, bis du das Gebet abhakst 
 - **Mitteilung zur Ezan-Zeit** mit den Buttons **„✅ Gebetet“** und **„⏰ Noch nicht“**
 - **Erneute Erinnerung** (Standard alle 15 Min., einstellbar 5–60 Min.), kurz vor Ablauf dringender
 - **Menüleiste mit Countdown**: „İkindi in 42 Min“ bis zum nächsten Gebet bzw. „⚠ Öğle noch 1 Std 5 Min“, solange ein Gebet fällig ist
-- **Ezan-Ton**: zur Gebetszeit ertönt ein Ezan-Ausschnitt als Mitteilungston, optional der komplette Ezan (stoppbar im Menü)
 - **Tagesübersicht** zum Abhaken, „Heute x/5“ und **Serie** (Tage mit allen 5 Gebeten)
 - Zeiten werden für ~1 Monat gespeichert, die App funktioniert also auch offline
 - Optional: Autostart beim Anmelden
@@ -60,24 +59,6 @@ Für ein Update führst du denselben Befehl einfach nochmal aus.
 | Akşam  | Akşam  | Yatsı                    |
 | Yatsı  | Yatsı  | İmsak des nächsten Tages |
 
-## Ton
-
-Unter *Einstellungen → Ton zur Gebetszeit*:
-
-| Option | Verhalten |
-|--------|-----------|
-| Ezan – Ausschnitt (26 s) | Standard. Ezan als Mitteilungston (macOS erlaubt max. 30 s) |
-| Ezan – komplett (1:26 min) | Die App spielt den ganzen Ezan ab, „Ezan stoppen“ im Menü |
-| Standard-Ton | Normaler macOS-Mitteilungston |
-| Aus | Lautlos |
-
-Die 15-Minuten-Erinnerungen nutzen immer den kurzen Standard-Ton (bzw. keinen bei „Aus“).
-
-Aufnahme: *The Adhan – Muslim Call to Prayer*, rezitiert von Aaqib Azeez, via
-[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:The_Adhan_-_Muslim_Call_to_Prayer_-_Aaqib_Azeez.mp3),
-Lizenz [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Gekürzt bzw. konvertiert,
-Details in [`Resources/Sounds/CREDITS.md`](Resources/Sounds/CREDITS.md).
-
 ## Datenquellen
 
 - **Diyanet**: offizielle Diyanet-Zeiten über den Spiegel-Server `ezanvakti.emushaf.net` (Land → Bundesland → Ort)
@@ -101,6 +82,5 @@ cd ezan-pro
 | `Sources/EzanPro/PrayerStore.swift` | Zeiten, Abhaken, Erinnerungslogik |
 | `Sources/EzanPro/Providers.swift`   | Diyanet- und IGMG-Abruf |
 | `Sources/EzanPro/Notifier.swift`    | Mitteilungen mit Aktionen |
-| `Sources/EzanPro/AdhanPlayer.swift` | Ezan-Wiedergabe und Ton-Optionen |
 | `Sources/EzanPro/MenuView.swift`    | Menüleisten-Fenster |
 | `Sources/EzanPro/SettingsView.swift`| Einstellungen |

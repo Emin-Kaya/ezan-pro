@@ -19,6 +19,7 @@ struct SettingsView: View {
     @State private var igmgSelection: String?
 
     @State private var loadError: String?
+    @State private var testResult: String?
 
     var body: some View {
         Form {
@@ -50,20 +51,20 @@ struct SettingsView: View {
                 Stepper(value: $store.reminderMinutes, in: 5...60, step: 5) {
                     Text("Erneut erinnern alle **\(store.reminderMinutes) Min.**, bis gebetet")
                 }
-                Picker("Ton zur Gebetszeit", selection: $store.adhanSound) {
-                    ForEach(AdhanSound.allCases) { Text($0.label).tag($0) }
-                }
-                if store.adhanSound == .clip || store.adhanSound == .full {
-                    HStack {
-                        Spacer()
-                        PreviewButton(player: store.player, sound: store.adhanSound)
-                    }
-                }
+                Toggle("Ton abspielen", isOn: $store.playSound)
                 Toggle("Beim Anmelden starten", isOn: Binding(
                     get: { store.launchAtLogin },
                     set: { store.launchAtLogin = $0 }
                 ))
-                Button("Test-Benachrichtigung senden") { store.notifier.sendTest() }
+                HStack {
+                    Button("Test-Benachrichtigung senden") {
+                        Task { testResult = await store.notifier.sendTest() }
+                    }
+                    Button("Mitteilungs-Einstellungen …") { Notifier.openSystemSettings() }
+                }
+                if let testResult {
+                    Text(testResult).font(.callout)
+                }
             }
         }
         .formStyle(.grouped)
@@ -183,18 +184,5 @@ struct SettingsView: View {
 
     private func apply() {
         if let loc = pendingLocation { store.setLocation(loc) }
-    }
-}
-
-private struct PreviewButton: View {
-    @ObservedObject var player: AdhanPlayer
-    let sound: AdhanSound
-
-    var body: some View {
-        if player.isPlaying {
-            Button("■ Stoppen") { player.stop() }
-        } else {
-            Button("▶︎ Anhören") { player.play(sound) }
-        }
     }
 }

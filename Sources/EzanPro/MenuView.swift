@@ -15,8 +15,6 @@ struct MenuView: View {
                     .font(.callout)
             }
 
-            AdhanStopBanner(player: store.player)
-
             Divider()
 
             if store.todayWindows.isEmpty {
@@ -130,20 +128,5 @@ private struct PrayerRow: View {
         .padding(.horizontal, 8)
         .padding(.vertical, 5)
         .background(isActive ? Color.accentColor.opacity(0.12) : .clear, in: RoundedRectangle(cornerRadius: 6))
-    }
-}
-
-private struct AdhanStopBanner: View {
-    @ObservedObject var player: AdhanPlayer
-
-    var body: some View {
-        if player.isPlaying {
-            Button {
-                player.stop()
-            } label: {
-                Label("Ezan stoppen", systemImage: "stop.fill")
-                    .frame(maxWidth: .infinity)
-            }
-        }
     }
 }

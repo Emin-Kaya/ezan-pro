@@ -6,7 +6,7 @@ import ServiceManagement
 final class PrayerStore: ObservableObject {
     @Published private(set) var location: LocationConfig
     @Published var reminderMinutes: Int { didSet { defaults.set(reminderMinutes, forKey: Keys.interval) } }
-    @Published var adhanSound: AdhanSound { didSet { defaults.set(adhanSound.rawValue, forKey: Keys.adhanSound) } }
+    @Published var playSound: Bool { didSet { defaults.set(playSound, forKey: Keys.sound) } }
     @Published private(set) var days: [String: DayTimes] = [:]
     @Published private(set) var prayed: Set<String> = []
     @Published private(set) var now = Date()
@@ -14,7 +14,6 @@ final class PrayerStore: ObservableObject {
     @Published private(set) var lastError: String?
 
     let notifier = Notifier()
-    let player = AdhanPlayer()
 
     private let defaults = UserDefaults.standard
     private var lastNotified: [String: Date] = [:]
@@ -25,7 +24,6 @@ final class PrayerStore: ObservableObject {
         static let location = "location"
         static let interval = "reminderMinutes"
         static let sound = "playSound"
-        static let adhanSound = "adhanSound"
         static let prayed = "prayed"
         static let cache = "cachedDays"
         static let cacheLocation = "cachedLocation"
@@ -39,12 +37,7 @@ final class PrayerStore: ObservableObject {
             location = .berlinDiyanet
         }
         reminderMinutes = defaults.object(forKey: Keys.interval) as? Int ?? 15
-        if let raw = defaults.string(forKey: Keys.adhanSound), let sound = AdhanSound(rawValue: raw) {
-            adhanSound = sound
-        } else {
-            // Older versions only had an on/off toggle.
-            adhanSound = (defaults.object(forKey: Keys.sound) as? Bool ?? true) ? .clip : .off
-        }
+        playSound = defaults.object(forKey: Keys.sound) as? Bool ?? true
         prayed = Set(defaults.stringArray(forKey: Keys.prayed) ?? [])
 
         if let data = defaults.data(forKey: Keys.cache),
@@ -183,29 +176,15 @@ final class PrayerStore: ObservableObject {
 
         if let last = lastNotified[w.id] {
             if now.timeIntervalSince(last) >= Double(reminderMinutes * 60) {
-                notifier.send(window: w, kind: .reminder(remainingMinutes: remaining), sound: reminderSound)
+                notifier.send(window: w, kind: .reminder(remainingMinutes: remaining), sound: playSound)
                 lastNotified[w.id] = now
             }
-        } else if now.timeIntervalSince(w.start) < 120 {
-            // The full adhan is too long for a notification sound, so the app plays it itself.
-            if adhanSound == .full { player.play(.full) }
-            notifier.send(window: w, kind: .adhan, sound: adhanNotificationSound)
-            lastNotified[w.id] = now
         } else {
-            notifier.send(window: w, kind: .reminder(remainingMinutes: remaining), sound: reminderSound)
+            let justStarted = now.timeIntervalSince(w.start) < 120
+            notifier.send(window: w, kind: justStarted ? .adhan : .reminder(remainingMinutes: remaining), sound: playSound)
             lastNotified[w.id] = now
         }
     }
-
-    private var adhanNotificationSound: Notifier.Sound {
-        switch adhanSound {
-        case .clip: .ezan
-        case .standard: .standard
-        case .full, .off: .none
-        }
-    }
-
-    private var reminderSound: Notifier.Sound { adhanSound == .off ? .none : .standard }
 
     // MARK: - Launch at login
 

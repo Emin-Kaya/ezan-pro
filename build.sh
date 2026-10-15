@@ -11,7 +11,6 @@ rm -rf build
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp .build/apple/Products/Release/EzanPro "$APP/Contents/MacOS/EzanPro"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
-cp Resources/Sounds/* "$APP/Contents/Resources/"
 codesign --force --sign - "$APP"
 (cd build && ditto -c -k --keepParent "Ezan Pro.app" EzanPro.zip)
 echo "Gebaut: $APP (+ build/EzanPro.zip)"
