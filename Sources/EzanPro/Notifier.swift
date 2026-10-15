@@ -8,6 +8,10 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
         case reminder(remainingMinutes: Int)
     }
 
+    enum Sound {
+        case ezan, standard, none
+    }
+
     var onPrayed: ((String) -> Void)?
     var onLater: ((String) -> Void)?
 
@@ -26,7 +30,7 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
         center.requestAuthorization(options: [.alert, .sound, .badge]) { _, _ in }
     }
 
-    func send(window w: PrayerWindow, kind: Kind, sound: Bool) {
+    func send(window w: PrayerWindow, kind: Kind, sound: Sound) {
         let content = UNMutableNotificationContent()
         switch kind {
         case .adhan:
@@ -45,7 +49,11 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
         content.categoryIdentifier = Self.category
         content.userInfo = ["id": w.id]
         content.interruptionLevel = .timeSensitive
-        if sound { content.sound = .default }
+        switch sound {
+        case .ezan: content.sound = UNNotificationSound(named: UNNotificationSoundName("Ezan.caf"))
+        case .standard: content.sound = .default
+        case .none: break
+        }
 
         // Same identifier per prayer, so a new reminder replaces the previous one.
         center.add(UNNotificationRequest(identifier: w.id, content: content, trigger: nil))
@@ -55,7 +63,7 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
         let content = UNMutableNotificationContent()
         content.title = "Ezan Pro"
         content.body = "Benachrichtigungen funktionieren ✅"
-        content.sound = .default
+        content.sound = UNNotificationSound(named: UNNotificationSoundName("Ezan.caf"))
         center.add(UNNotificationRequest(identifier: "test", content: content, trigger: nil))
     }
 
