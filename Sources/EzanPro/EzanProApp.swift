@@ -3,11 +3,14 @@ import SwiftUI
 @main
 struct EzanProApp: App {
     @StateObject private var store = PrayerStore()
+    // Not a @StateObject: those are created lazily, but update checks should start at launch.
+    private let updater = Updater()
 
     var body: some Scene {
         MenuBarExtra {
             MenuView()
                 .environmentObject(store)
+                .environmentObject(updater)
         } label: {
             MenuBarLabel(store: store)
         }
@@ -16,6 +19,7 @@ struct EzanProApp: App {
         Window("Ezan Pro – Einstellungen", id: "settings") {
             SettingsView()
                 .environmentObject(store)
+                .environmentObject(updater)
         }
         .windowResizability(.contentSize)
     }

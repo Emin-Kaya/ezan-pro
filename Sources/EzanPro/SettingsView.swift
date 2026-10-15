@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject private var store: PrayerStore
+    @EnvironmentObject private var updater: Updater
 
     @State private var source: Source = .diyanet
 
@@ -66,15 +67,37 @@ struct SettingsView: View {
                     Text(testResult).font(.callout)
                 }
             }
+
+            Section("Updates") {
+                LabeledContent("Installierte Version", value: updater.currentVersion)
+                Toggle("Updates automatisch installieren", isOn: $updater.autoInstall)
+                HStack {
+                    Button("Jetzt nach Updates suchen") { Task { await updater.check() } }
+                        .disabled(updater.state == .checking || updater.state == .installing)
+                    Spacer()
+                    Text(updateStatus).font(.callout).foregroundStyle(.secondary)
+                }
+            }
         }
         .formStyle(.grouped)
-        .frame(width: 460, height: 560)
+        .frame(width: 460, height: 680)
         .task {
             source = store.location.source
             await loadDiyanetDefaults()
         }
         .onChange(of: source) { _, new in
             if new == .igmg, igmgCities.isEmpty { Task { await loadIGMG() } }
+        }
+    }
+
+    private var updateStatus: String {
+        switch updater.state {
+        case .idle: ""
+        case .checking: "Suche …"
+        case .upToDate: "✅ Aktuell"
+        case .available(let v): "Version \(v) verfügbar"
+        case .installing: "Wird installiert …"
+        case .failed(let msg): msg
         }
     }
 

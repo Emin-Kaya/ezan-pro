@@ -12,6 +12,7 @@ Falls nicht, erinnert sie dich alle 15 Minuten erneut, bis du das Gebet abhakst 
 - **Tagesübersicht** zum Abhaken, „Heute x/5“ und **Serie** (Tage mit allen 5 Gebeten)
 - Zeiten werden für ~1 Monat gespeichert, die App funktioniert also auch offline
 - Optional: Autostart beim Anmelden
+- **Automatische Updates**: die App prüft alle 6 Stunden auf eine neue Version und installiert sie selbst
 
 ## Installation
 
@@ -26,7 +27,10 @@ curl -fsSL https://raw.githubusercontent.com/Emin-Kaya/ezan-pro/main/install.sh 
 ```
 
 Das lädt die neueste Version herunter, installiert sie nach `/Programme` und startet sie.
-Für ein Update führst du denselben Befehl einfach nochmal aus.
+
+**Updates** kommen ab Version 1.4 automatisch: Die App prüft beim Start und alle 6 Stunden, ob es auf GitHub
+ein neueres Release gibt, installiert es und startet neu. Abschaltbar unter *Einstellungen → Updates*.
+Wer noch Version 1.3 oder älter hat, führt den Befehl oben einmal erneut aus.
 
 ### Variante B: manuell herunterladen
 
@@ -67,6 +71,14 @@ Für ein Update führst du denselben Befehl einfach nochmal aus.
 Beide Quellen sind keine offiziellen Schnittstellen. Ändern die Anbieter etwas, muss die App eventuell angepasst werden.
 Die Zeiten werden in der Zeitzone deines Macs angezeigt.
 
+## Neue Version veröffentlichen
+
+1. Version in `Resources/Info.plist` erhöhen (`CFBundleShortVersionString`, z. B. `1.5`)
+2. `./build.sh`
+3. Committen, pushen und `gh release create v1.5 build/EzanPro.zip`
+
+Der Tag muss zur Version passen. Installierte Apps holen sich das Update dann automatisch.
+
 ## Selbst bauen
 
 Benötigt Xcode bzw. die Xcode Command Line Tools.
@@ -82,5 +94,6 @@ cd ezan-pro
 | `Sources/EzanPro/PrayerStore.swift` | Zeiten, Abhaken, Erinnerungslogik |
 | `Sources/EzanPro/Providers.swift`   | Diyanet- und IGMG-Abruf |
 | `Sources/EzanPro/Notifier.swift`    | Mitteilungen mit Aktionen |
+| `Sources/EzanPro/Updater.swift`     | Automatische Updates über GitHub-Releases |
 | `Sources/EzanPro/MenuView.swift`    | Menüleisten-Fenster |
 | `Sources/EzanPro/SettingsView.swift`| Einstellungen |

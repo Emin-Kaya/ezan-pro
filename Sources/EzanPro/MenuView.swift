@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MenuView: View {
     @EnvironmentObject private var store: PrayerStore
+    @EnvironmentObject private var updater: Updater
     @Environment(\.openWindow) private var openWindow
 
     var body: some View {
@@ -32,6 +33,8 @@ struct MenuView: View {
                 Text(error).font(.caption).foregroundStyle(.red)
             }
 
+            updateBanner
+
             Divider()
 
             HStack {
@@ -59,6 +62,25 @@ struct MenuView: View {
         }
         .padding(14)
         .frame(width: 300)
+    }
+
+    @ViewBuilder
+    private var updateBanner: some View {
+        switch updater.state {
+        case .available(let version):
+            Button {
+                Task { await updater.install() }
+            } label: {
+                Label("Update auf \(version) installieren", systemImage: "arrow.down.circle")
+                    .frame(maxWidth: .infinity)
+            }
+        case .installing:
+            Label("Update wird installiert …", systemImage: "arrow.down.circle")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        default:
+            EmptyView()
+        }
     }
 
     private var header: some View {
